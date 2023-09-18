@@ -40,19 +40,49 @@ function init() {
 
     // CARS CONFIG
     const cars = [
-        {
-            startPosition: cellCount - (width + 1),
+        {    // Car 0
+            startPosition: cellCount - (width + 1), 
             currentPosition: cellCount - (width + 1),
             speed: 1
         },
-        {
-            startPosition: cellCount - (width + 1) - 5,
-            currentPosition: cellCount - (width + 1) - 5,
+        {    // Car 1
+            startPosition: cellCount - (width + 1) - 4,
+            currentPosition: cellCount - (width + 1) - 4,
             speed: 1
         },
-        {
-            startPosition: cellCount - (width + 1) - 10,
-            currentPosition: cellCount - (width + 1) - 10,
+        {    // Car 2
+            startPosition: cellCount - (width + 1) - 9,
+            currentPosition: cellCount - (width + 1) - 9,
+            speed: 1
+        },
+        {    // Car 3
+            startPosition: cellCount - (width * 3 + 1),
+            currentPosition: cellCount - (width * 3 + 1),
+            speed: 1
+        },
+        {    // Car 4
+            startPosition: cellCount - (width * 3 + 1) - 4,
+            currentPosition: cellCount - (width * 3 + 1) - 4,
+            speed: 1
+        },
+        {    // Car 5
+            startPosition: cellCount - (width * 3 + 1) - 8,
+            currentPosition: cellCount - (width * 3 + 1) - 8,
+            speed: 1
+        },
+        {    // Car 6
+            startPosition: cellCount - (width * 5 + 1),
+            currentPosition: cellCount - (width * 5 + 1),
+            speed: 1
+        },
+        {    // Car 7
+            startPosition: cellCount - (width * 5 + 1) - 4,
+            currentPosition: cellCount - (width * 5 + 1) - 4,
+            speed: 1
+        },
+        {    // Car 8
+            startPosition: cellCount - (width * 5 + 1) - 8,
+            currentPosition: cellCount - (width * 5 + 1) - 8,
             speed: 1
         }
     ];
@@ -179,19 +209,21 @@ function init() {
         car.currentPosition -= car.speed; // Move car to the left
     
         // Reset car if it reaches left edge
-        if (car.currentPosition < cellCount - (width * 2)) {
-            if (car !== cars[0]) { // If it's not the first car
-                car.currentPosition = cars[0].startPosition; // Set its current position to the startPosition of the first car
-            } else {
-                car.currentPosition = car.startPosition; // For all other cars, use their own startPosition
-            }
+        if (car.currentPosition % width === width - 1 || car.currentPosition < 0) {
+
+            // Determine the row of the car's starting position
+            let rowOfStartingPosition = Math.floor(car.startPosition / width);
+
+            // Set the currentPosition to the rightmost cell of that row
+            car.currentPosition = (rowOfStartingPosition + 1) * width - 1;
         }
+
         addCar(car);
     }
 
-    cars.forEach(car => {
-        moveCar(car);
-        setInterval(() => moveCar(car), 1000);
+    cars.forEach((car, index) => {
+        const interval = [3, 4, 5].includes(index) ? 800 : 1000; 
+        setInterval(() => moveCar(car), interval);
     });
 
     // ! EVENTS
@@ -200,6 +232,20 @@ function init() {
     // ! PAGE LOAD / RENDER
     createGrid() // Create grid
 
+    addCar(cars[1]);
+    addCar(cars[2]);
+    addCar(cars[4]);
+    addCar(cars[5]);
+    addCar(cars[7]);
+    addCar(cars[8]);
+    
+    // Make them move once before the interval starts
+    moveCar(cars[1]);
+    moveCar(cars[2]);
+    moveCar(cars[4]);
+    moveCar(cars[5]);
+    moveCar(cars[7]);
+    moveCar(cars[8]);
 
     topLocations.forEach(position => {  // Add Score locations
         addClassToCell(position, 'topLocations');
