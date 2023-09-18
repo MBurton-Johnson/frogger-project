@@ -10,14 +10,66 @@ function init() {
     // ? VARIABLES
 
     //BOARD CONFIG
-    const width = 10
-    const height = 10
+    const width = 17
+    const height = 15
     const cellCount = width * height
     let cells = []
 
     // CHARACTER CONFIG
-    const startingPosition = 0
+    const startingPosition = 246
     let currentPosition = startingPosition
+
+    // ENVIRONMENT STYLING
+    function addClassToCell(position, className) {
+        cells[position].classList.add(className)
+    }
+
+    // ENVIRONMENT LOCATIONS CONFIG
+    const topLocations = [2, 5, 8, 11, 14] // score locations
+   
+    const startLine = Array.from({ length: width }, (_, i) => cellCount - width + i); // start line
+
+    const middleRowStart = Math.floor(height / 2) * width
+    const middleRow = Array.from({length: width }, (_, i) => middleRowStart+i) // middle row
+
+    const rightBorderStart = width
+    const rightBorder = Array.from({length:height}, (_,i) => (i+1) * rightBorderStart -1)
+
+    const leftBorder = Array.from({length:height}, (_,i) => i * width)
+
+
+    // CARS CONFIG
+    const cars = [
+        {
+            startPosition: cellCount - (width + 1),
+            currentPosition: cellCount - (width + 1),
+            speed: 1
+        },
+        {
+            startPosition: cellCount - (width + 1) - 5,
+            currentPosition: cellCount - (width + 1) - 5,
+            speed: 1
+        },
+        {
+            startPosition: cellCount - (width + 1) - 10,
+            currentPosition: cellCount - (width + 1) - 10,
+            speed: 1
+        }
+    ];
+
+    // PLATFORMS CONFIG
+
+    // END GAME VARIABLES
+
+    let frogPlacement; // 1 or null
+    let winStage; // 1 or null
+    let winGame; // 1 or null
+    let loseLife; // 1 or null
+    let gameOver; // 1 or null
+
+    //! ENVIRONMENT STATE
+    // CREATE SCORE LOCATIONS
+
 
     // ! FUNCTIONS
     // CREATE GRID CELLS
@@ -45,24 +97,31 @@ function init() {
             cells.push(cell)
             
         }
-            // Add cat character class to starting posiiton
-            addCat(startingPosition)
+            // Add frogger character class to starting posiiton
+            addFrogger(startingPosition)
 
     }
 
-    // ? ADD CAT CLASS
-    function addCat(position) {
-        console.log('CAT BEING ADDED TO THE FOLLOWING CELL ->', position);
-        cells[position].classList.add('cat')
+    // ? ADD FROGGER CLASS
+    function addFrogger(position) {
+        console.log('FROGGER BEING ADDED TO THE FOLLOWING CELL ->', position);
+        cells[position].classList.add('frogger')
     }
 
-    // ? REMOVE CAT CLASS
-    function removeCat() {
-        console.log('CAT REMOVED')
-        cells[currentPosition].classList.remove('cat')
+    // ? REMOVE FROGGER CLASS
+    function removeFrogger() {
+        console.log('FROGGER REMOVED')
+        cells[currentPosition].classList.remove('frogger')
     }
 
-    // ? Handle movementt
+    // ? ADD FROGGER SCORED CLASS
+
+    function addIcon(position) {
+        console.log('ICON BEING ADDED TO THE FOLLOWING CELL ->', position);
+        cells[position].classList.add('icon') 
+    }
+
+    // ? Handle frogger movement
     function handleMovement(event) {
         const key = event.keyCode
 
@@ -71,9 +130,9 @@ function init() {
         const left = 37
         const right = 39
 
-        // Remove cat from previous position before
+        // Remove frogger from previous position before
         // updating current position to new cell
-        removeCat()
+        removeFrogger()
 
         // Check which key was pressed and execute code
         if (key === up && currentPosition >= width) {
@@ -91,17 +150,76 @@ function init() {
         } else {
             console.log('INVALID KEY');
         }
-        //Add cat class once currentPosition has been updated
-        addCat(currentPosition)
+        
+        //  Check if frogger has scored
+
+        if (topLocations.includes(currentPosition)) {
+            addIcon(currentPosition)
+            currentPosition = startingPosition
+        
+        }
+        //  Add frogger class once currentPosition has been updated
+        addFrogger(currentPosition)
     }
 
+    //? ADD CAR CLASS
+
+    function addCar(car) {
+        cells[car.currentPosition].classList.add('car');
+    }
+    
+    function removeCar(car) {
+        cells[car.currentPosition].classList.remove('car');
+    }
+
+    //? Handle car movement
+
+    function moveCar(car) {
+        removeCar(car);
+        car.currentPosition -= car.speed; // Move car to the left
+    
+        // Reset car if it reaches left edge
+        if (car.currentPosition < cellCount - (width * 2)) {
+            if (car !== cars[0]) { // If it's not the first car
+                car.currentPosition = cars[0].startPosition; // Set its current position to the startPosition of the first car
+            } else {
+                car.currentPosition = car.startPosition; // For all other cars, use their own startPosition
+            }
+        }
+        addCar(car);
+    }
+
+    cars.forEach(car => {
+        moveCar(car);
+        setInterval(() => moveCar(car), 1000);
+    });
 
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
 
-    // ! PAGE LOAD
+    // ! PAGE LOAD / RENDER
     createGrid() // Create grid
 
+
+    topLocations.forEach(position => {  // Add Score locations
+        addClassToCell(position, 'topLocations');
+    });
+
+    startLine.forEach(position => {    // add Start Line
+        addClassToCell(position, 'startLine');
+    });
+
+    middleRow.forEach(position => {
+        addClassToCell(position, 'middleRow') // add middle row
+    })
+
+    rightBorder.forEach(position => {
+        addClassToCell(position, 'rightBorder') // hide right hand border
+    })
+
+    leftBorder.forEach(position => {
+        addClassToCell(position, 'leftBorder') // hide left hand border
+    })
 }
 
 window.addEventListener('DOMContentLoaded', init)

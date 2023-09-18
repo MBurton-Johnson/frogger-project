@@ -17,7 +17,7 @@
   
   .grid {
     align-items: center;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2); */
     display: flex;
     flex-wrap: wrap;
     height: 100%;
@@ -27,15 +27,49 @@
   }
   
   .grid div {
-    border: 1px solid lightgrey;
+    border: 1px solid rgb(243, 243, 243);
     flex-grow: 1;
+    color: rgb(243, 243, 243);
     /* height: 10%;
     width: 10%; */
   }
   
-  .grid div.cat {
-    background-image: url('../assets/cat.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-    cursor: pointer;
+  .grid div.topLocations {
+    background-color: lightgray
   }
+
+  .grid div.startLine {
+    background-color: purple;
+    border-color: purple;
+    color: purple;
+  }
+
+  .grid div.middleRow {
+    background-color: purple;
+    border-color: purple;
+    color: purple;
+  }
+
+  .grid div.rightBorder {
+   visibility: hidden;
+  }
+
+  .grid div.leftBorder {
+    visibility: hidden;
+   }
+ 
+
+  .grid div.frogger {
+    background-color: green;
+    color: green;
+  }
+
+  .grid div.icon {
+    background-color: green;
+  }
+
+  .grid div.car {
+    background-color:grey;
+    color: gray;
+  }
+
