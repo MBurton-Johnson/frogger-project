@@ -44,6 +44,16 @@
     color: purple;
   }
 
+  .grid div.topRow {
+    visibility: hidden;
+  }
+
+  .grid div.secondTopRow {
+    background-color: greenyellow;
+    border-color: greenyellow;
+    color: greenyellow;
+  }
+
   .grid div.middleRow {
     background-color: purple;
     border-color: purple;
@@ -58,7 +68,6 @@
     visibility: hidden;
    }
  
-
   .grid div.frogger {
     background-color: green;
     color: green;

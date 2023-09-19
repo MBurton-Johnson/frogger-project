@@ -10,13 +10,13 @@ function init() {
     // ? VARIABLES
 
     //BOARD CONFIG
-    const width = 17
-    const height = 15
+    const width = 21
+    const height = 17
     const cellCount = width * height
     let cells = []
 
     // CHARACTER CONFIG
-    const startingPosition = 246
+    const startingPosition = 346
     let currentPosition = startingPosition
 
     // ENVIRONMENT STYLING
@@ -25,17 +25,31 @@ function init() {
     }
 
     // ENVIRONMENT LOCATIONS CONFIG
-    const topLocations = [2, 5, 8, 11, 14] // score locations
+    const topLocations = [67, 70, 73, 76, 79] // score locations
    
     const startLine = Array.from({ length: width }, (_, i) => cellCount - width + i); // start line
 
-    const middleRowStart = Math.floor(height / 2) * width
+    const topRow = Array.from({length: (2*width)}, (_, i) => (2*width) - (2*width) + i);
+
+    const secondTopRow = Array.from({length: width}, (_, i) => (3*width) - width + i);
+
+    const middleRowStart = (Math.floor(height / 2) * width) + width
     const middleRow = Array.from({length: width }, (_, i) => middleRowStart+i) // middle row
 
-    const rightBorderStart = width
-    const rightBorder = Array.from({length:height}, (_,i) => (i+1) * rightBorderStart -1)
-
-    const leftBorder = Array.from({length:height}, (_,i) => i * width)
+    const rightBorderStart = width - 2;  
+    const leftBorderStart = 0;           
+    
+    const rightBorder = Array.from({length: height}, (_, i) => [ // two right hand borders
+        (i * width) + rightBorderStart, 
+        (i * width) + rightBorderStart + 1,
+        18 + (i* width)
+    ]).flat();
+    
+    const leftBorder = Array.from({length: height}, (_, i) => [  // two left hand borders
+        (i * width) + leftBorderStart,  
+        (i * width) + leftBorderStart + 1,
+        2 + (i*width)
+    ]).flat();
 
 
     // CARS CONFIG
@@ -46,13 +60,13 @@ function init() {
             speed: 1
         },
         {    // Car 1
-            startPosition: cellCount - (width + 1) - 4,
-            currentPosition: cellCount - (width + 1) - 4,
+            startPosition: cellCount - (width + 1) - 5,
+            currentPosition: cellCount - (width + 1) - 5,
             speed: 1
         },
         {    // Car 2
-            startPosition: cellCount - (width + 1) - 9,
-            currentPosition: cellCount - (width + 1) - 9,
+            startPosition: cellCount - (width + 1) - 11,
+            currentPosition: cellCount - (width + 1) - 11,
             speed: 1
         },
         {    // Car 3
@@ -66,17 +80,17 @@ function init() {
             speed: 1
         },
         {    // Car 5
-            startPosition: cellCount - (width * 3 + 1) - 8,
-            currentPosition: cellCount - (width * 3 + 1) - 8,
+            startPosition: cellCount - (width * 3 + 1) - 9,
+            currentPosition: cellCount - (width * 3 + 1) - 9,
             speed: 1
         },
-        {    // Car 6
+        {    // Car 6 (TRUCK 1)
             startPosition: cellCount - ((width * 5) + 1),
             currentPosition: cellCount - ((width * 5) + 1),
             speed: 1
         },
         
-        {    // Car 7
+        {    // Car 7 (TRUCK 2)
             startPosition: cellCount - ((width * 5) + 1) - 6,
             currentPosition: cellCount - ((width * 5) + 1) - 6,
             speed: 1
@@ -108,13 +122,59 @@ function init() {
     ]
     // PLATFORMS CONFIG
 
+    // LOGS
     const logs = [
         {    // Log 0
-            startPosition: cellCount - (rightStart - (2*width)) + 4, 
-            currentPosition: cellCount - (rightStart - (2*width)) + 4,
+            startPosition: rightStart - (7*width),
+            currentPosition: rightStart - (7*width),
             speed: 1
         },
+        {    // Log 1
+            startPosition: rightStart - (7*width) + 5, 
+            currentPosition: rightStart - (7*width) + 5,
+            speed: 1
+        },
+        {    // Log 2
+            startPosition: rightStart - (7*width) + 10, 
+            currentPosition: rightStart - (7*width) + 10,
+            speed: 1
+        },
+        {    // Log 3
+            startPosition: rightStart - (8*width) + 10, 
+            currentPosition: rightStart - (8*width) + 10,
+            speed: 1
+        },
+        {    // Log 4
+            startPosition: rightStart - (8*width) + 2, 
+            currentPosition: rightStart - (8*width) + 2,
+            speed: 1
+        },
+        {    // Log 5
+            startPosition: rightStart - (10*width), 
+            currentPosition: rightStart - (10*width),
+            speed: 1
+        },
+        {    // Log 6
+            startPosition: rightStart - (10*width)+7, 
+            currentPosition: rightStart - (10*width)+7,
+            speed: 1
+        },
+        {    // Log 7
+            startPosition: rightStart - (10*width)+14, 
+            currentPosition: rightStart - (10*width)+14,
+            speed: 1
+        }
     ]
+
+    // TURTLES
+
+    // const turtles = [
+    //     {    // turtle 0
+    //         startPosition: cellCount - (width * 8) - 5,
+    //         currentPosition: cellCount - (width * 8) - 5,
+    //         speed: 1
+    //     },
+    // ]
 
     // END GAME VARIABLES
 
@@ -224,6 +284,8 @@ function init() {
         }
     }
     
+    //? REMOVE CAR CLASS
+
     function removeCar(car) {
         cells[car.currentPosition].classList.remove('car');
         if(car === cars[7] || car === cars[6]) {
@@ -236,17 +298,53 @@ function init() {
     function addLog(brownLog) {
         cells[brownLog.currentPosition].classList.add('log');
         cells[brownLog.currentPosition + 1].classList.add('log');
-            cells[brownLog.currentPosition + 2].classList.add('log');
-        
+        cells[brownLog.currentPosition + 2].classList.add('log');
+          if (brownLog === logs[3] || brownLog === logs[4]) {
+                cells[brownLog.currentPosition].classList.add('log');
+                cells[brownLog.currentPosition + 1].classList.add('log');
+                cells[brownLog.currentPosition + 2].classList.add('log');
+                cells[brownLog.currentPosition + 3].classList.add('log');
+                cells[brownLog.currentPosition + 4].classList.add('log');
+            } if (brownLog === logs[5] || brownLog === logs[6] || brownLog === logs[7]) {
+                    cells[brownLog.currentPosition].classList.add('log');
+                    cells[brownLog.currentPosition + 1].classList.add('log');
+                    cells[brownLog.currentPosition + 2].classList.add('log');
+                    cells[brownLog.currentPosition + 3].classList.add('log');
     }
-    
+}
+    //? REMOVE LOG CLASS
     function removeLog(brownLog) {
         cells[brownLog.currentPosition].classList.remove('log');
-            cells[brownLog.currentPosition + 1].classList.remove('log');
-            cells[brownLog.currentPosition + 2].classList.remove('log');
+        cells[brownLog.currentPosition + 1].classList.remove('log');
+        cells[brownLog.currentPosition + 2].classList.remove('log');
+            if (brownLog === logs[3] || brownLog === logs[4]) {
+                cells[brownLog.currentPosition].classList.remove('log');
+                cells[brownLog.currentPosition + 1].classList.remove('log');
+                cells[brownLog.currentPosition + 2].classList.remove('log');
+                cells[brownLog.currentPosition + 3].classList.remove('log');
+                cells[brownLog.currentPosition + 4].classList.remove('log');
+             } if (brownLog === logs[5] || brownLog === logs[6] || brownLog === logs[7]) {
+                    cells[brownLog.currentPosition].classList.remove('log');
+                    cells[brownLog.currentPosition + 1].classList.remove('log');
+                    cells[brownLog.currentPosition + 2].classList.remove('log');
+                    cells[brownLog.currentPosition + 3].classList.remove('log');
+            }
         
     }
 
+    //? ADD TURTLE CLASS
+    // function addTurtle(turtle) {
+    //     cells[turtle.currentPosition].classList.add('turtle');
+    //     cells[turtle.currentPosition + 1].classList.add('turtle');
+    //     cells[turtle.currentPosition + 2].classList.add('turtle');
+    // }
+
+    // //? REMOVE TURTLE CLASS
+    // function removeTurtle(turtle) {
+    //     cells[turtle.currentPosition].classList.remove('turtle');
+    //     cells[turtle.currentPosition + 1].classList.remove('turtle');
+    //     cells[turtle.currentPosition + 2].classList.remove('turtle');
+    // }
     // //? ADD CAR [RIGHT MOVEMENT] CLASS
 
     // function addCar(carRight) {
@@ -309,9 +407,12 @@ function init() {
             
         // Reset car if it reaches right edge
         if (carRight.currentPosition % width === 0 || carRight.currentPosition >= cellCount) {
+            
+            // Determine the row of the car's starting position
             let rowOfStartingPosition = Math.floor(carRight.startPosition / width);
+            
+            // Set the currentPosition to the rightmost cell of that row
             carRight.currentPosition = rowOfStartingPosition * width;
-            // carRight.currentPosition = carRight.startPosition;
         }
         addCar(carRight);
     }
@@ -333,31 +434,60 @@ function init() {
     // })
 
 
-//? Handle log movement right
+//? Handle log movement 
 
 function moveLog(brownLog) {
     removeLog(brownLog);
-    brownLog.currentPosition += brownLog.speed; // Move car to the right
+    brownLog.currentPosition += brownLog.speed; // Move log to the right
         
-    // Reset car if it reaches right edge
-    if (brownLog.currentPosition % width === 0 || brownLog.currentPosition >= cellCount) {
+    // Reset log if it reaches right edge
+    if (brownLog.currentPosition % width === width -1 || brownLog.currentPosition >= cellCount) {
         let rowOfStartingPosition = Math.floor(brownLog.startPosition / width);
         brownLog.currentPosition = rowOfStartingPosition * width;
-        // carRight.currentPosition = carRight.startPosition;
     }
     addLog(brownLog);
 }
 
-// Controls car speed
+// Controls log speed
 logs.forEach((brownLog, index) => {
     let interval;
-    if ([0].includes(index)) {
+    if ([0, 1 ,2].includes(index)) {
         interval = 1200;
+    } else if ([3, 4].includes(index)) {
+        interval = 200;
     } else {
-        interval = 500
+        interval = 500;
     }
     setInterval(() => moveLog(brownLog), interval);
 })
+
+    //? Handle turtle movement 
+
+    // function moveTurtle(turtle) {
+    //     removeTurtle(turtle);
+    //     turtle.currentPosition -= turtle.speed; // Move turtle to the left
+        
+    //     // Reset turtle if it reaches left edge
+    //         if (turtle.currentPosition % width === width - 2 || turtle.currentPosition < 0) {
+    //             let rowOfStartingPosition = Math.floor(turtle.startPosition / width);
+    //             turtle.currentPosition = (rowOfStartingPosition + 1) * width - 2;
+    //         }
+    
+    //     addTurtle(turtle);
+    // }
+
+    // // Controls turtle speed
+    // turtles.forEach((turtle, index) => {
+    //     let interval;
+    //     if ([0, 1, 2].includes(index)) {
+    //         interval = 1000;
+    //     } else if ([6, 7].includes(index)) {
+    //         interval = 500;
+    //     } else {
+    //         interval = 800
+    //     }
+    //     setInterval(() => moveTurtle(turtle), interval);
+    // })
 
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
@@ -377,9 +507,18 @@ logs.forEach((brownLog, index) => {
     addCar(carsRight[3]);
 
     addLog(logs[0]);
+    addLog(logs[1]);
+    addLog(logs[2]);
+    addLog(logs[3]);
+    addLog(logs[4]);
+    addLog(logs[5]);
+    addLog(logs[6]);
+    addLog(logs[7]);
+
+    // addTurtle(turtles[0]);
 
     // Make them move once before the interval starts
-    moveCar(cars[1]);
+    moveCar(cars[1]); // should this be starting from 1? or 0?
     moveCar(cars[2]);
     moveCar(cars[4]);
     moveCar(cars[5]);
@@ -391,6 +530,15 @@ logs.forEach((brownLog, index) => {
     moveCarRight(carsRight[3]);
 
     moveLog(logs[0]);
+    moveLog(logs[1]);
+    moveLog(logs[2]);
+    moveLog(logs[3]);
+    moveLog(logs[4]);
+    moveLog(logs[5]);
+    moveLog(logs[6]);
+    moveLog(logs[7]);
+
+    // moveTurtle(turtles[0]);
 
     topLocations.forEach(position => {  // Add Score locations
         addClassToCell(position, 'topLocations');
@@ -402,6 +550,14 @@ logs.forEach((brownLog, index) => {
 
     middleRow.forEach(position => {
         addClassToCell(position, 'middleRow') // add middle row
+    })
+
+    topRow.forEach(position => {
+        addClassToCell(position, 'topRow') // add top row
+    })
+
+    secondTopRow.forEach(position => {
+        addClassToCell(position, 'secondTopRow') // add second top row
     })
 
     rightBorder.forEach(position => {
