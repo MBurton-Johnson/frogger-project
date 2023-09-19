@@ -71,5 +71,12 @@
   .grid div.car {
     background-color:grey;
     color: gray;
+    border-color: transparent;
+  }
+
+  .grid div.log {
+    background-color: brown;
+    color: brown;
+    border-color: transparent;
   }
 

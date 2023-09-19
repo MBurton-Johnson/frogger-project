@@ -71,23 +71,50 @@ function init() {
             speed: 1
         },
         {    // Car 6
-            startPosition: cellCount - (width * 5 + 1),
-            currentPosition: cellCount - (width * 5 + 1),
+            startPosition: cellCount - ((width * 5) + 1),
+            currentPosition: cellCount - ((width * 5) + 1),
             speed: 1
         },
+        
         {    // Car 7
-            startPosition: cellCount - (width * 5 + 1) - 4,
-            currentPosition: cellCount - (width * 5 + 1) - 4,
+            startPosition: cellCount - ((width * 5) + 1) - 6,
+            currentPosition: cellCount - ((width * 5) + 1) - 6,
             speed: 1
         },
-        {    // Car 8
-            startPosition: cellCount - (width * 5 + 1) - 8,
-            currentPosition: cellCount - (width * 5 + 1) - 8,
-            speed: 1
-        }
     ];
+    const rightStart = (height - 3) * width;
+    const carsRight = [
+        {    // Car 0
+            startPosition: rightStart, 
+            currentPosition: rightStart,
+            speed: 1
+        },
+        {    // Car 1
+            startPosition: rightStart + 4, 
+            currentPosition: rightStart + 4,
+            speed: 1
+        },
+        {    // Car 2
+            startPosition: rightStart + 8, 
+            currentPosition: rightStart + 8,
+            speed: 1
+        },
+        {    // Car 3
+            startPosition: (rightStart - (2*width)) + 4, 
+            currentPosition: (rightStart - (2*width)) + 4,
+            speed: 1
+        },
 
+    ]
     // PLATFORMS CONFIG
+
+    const logs = [
+        {    // Log 0
+            startPosition: cellCount - (rightStart - (2*width)) + 4, 
+            currentPosition: cellCount - (rightStart - (2*width)) + 4,
+            speed: 1
+        },
+    ]
 
     // END GAME VARIABLES
 
@@ -96,10 +123,6 @@ function init() {
     let winGame; // 1 or null
     let loseLife; // 1 or null
     let gameOver; // 1 or null
-
-    //! ENVIRONMENT STATE
-    // CREATE SCORE LOCATIONS
-
 
     // ! FUNCTIONS
     // CREATE GRID CELLS
@@ -151,7 +174,7 @@ function init() {
         cells[position].classList.add('icon') 
     }
 
-    // ? Handle frogger movement
+    // ? Handle frogger LEFT movement
     function handleMovement(event) {
         const key = event.keyCode
 
@@ -196,35 +219,145 @@ function init() {
 
     function addCar(car) {
         cells[car.currentPosition].classList.add('car');
+        if(car === cars[7] || car === cars[6]) {
+            cells[car.currentPosition + 1].classList.add('car');
+        }
     }
     
     function removeCar(car) {
         cells[car.currentPosition].classList.remove('car');
+        if(car === cars[7] || car === cars[6]) {
+            cells[car.currentPosition + 1].classList.remove('car');
+        }
     }
 
-    //? Handle car movement
+    //? ADD LOG CLASS
+
+    function addLog(brownLog) {
+        cells[brownLog.currentPosition].classList.add('log');
+        cells[brownLog.currentPosition + 1].classList.add('log');
+            cells[brownLog.currentPosition + 2].classList.add('log');
+        
+    }
+    
+    function removeLog(brownLog) {
+        cells[brownLog.currentPosition].classList.remove('log');
+            cells[brownLog.currentPosition + 1].classList.remove('log');
+            cells[brownLog.currentPosition + 2].classList.remove('log');
+        
+    }
+
+    // //? ADD CAR [RIGHT MOVEMENT] CLASS
+
+    // function addCar(carRight) {
+    //     cells[carRight.currentPosition].classList.add('car');
+    //     if(carRight === cars[7] || carRight === cars[6]) {
+    //         cells[carRight.currentPosition - 1].classList.add('car'); // Note the -1 for right-moving cars
+    //     }
+    // }
+        
+    // function removeCar(carRight) {
+    //     cells[carRight.currentPosition].classList.remove('car');
+    //     if(carRight === cars[7] || carRight === cars[6]) {
+    //         cells[carRight.currentPosition - 1].classList.remove('car'); // Note the -1 for right-moving cars
+    //     }
+    // }
+
+    //? Handle car movement LEFT
 
     function moveCar(car) {
         removeCar(car);
         car.currentPosition -= car.speed; // Move car to the left
-    
+        
         // Reset car if it reaches left edge
-        if (car.currentPosition % width === width - 1 || car.currentPosition < 0) {
-
+        if (car === cars[6] || car === cars[7]) {   // logic for trucks
+            if (car.currentPosition % width === width - 2 || car.currentPosition < 0) {
+                let rowOfStartingPosition = Math.floor(car.startPosition / width);
+                car.currentPosition = (rowOfStartingPosition + 1) * width - 2;
+            }
+        } else if (car.currentPosition % width === width - 1 || car.currentPosition < 0) {
+            
             // Determine the row of the car's starting position
             let rowOfStartingPosition = Math.floor(car.startPosition / width);
 
             // Set the currentPosition to the rightmost cell of that row
             car.currentPosition = (rowOfStartingPosition + 1) * width - 1;
-        }
 
+             }
+    
         addCar(car);
     }
 
+    // Controls car speed
     cars.forEach((car, index) => {
-        const interval = [3, 4, 5].includes(index) ? 800 : 1000; 
+        let interval;
+        if ([0, 1, 2].includes(index)) {
+            interval = 1000;
+        } else if ([6, 7].includes(index)) {
+            interval = 500;
+        } else {
+            interval = 800
+        }
         setInterval(() => moveCar(car), interval);
-    });
+    })
+
+    //? Handle car movement RIGHT
+
+    function moveCarRight(carRight) {
+        removeCar(carRight);
+        carRight.currentPosition += carRight.speed; // Move car to the right
+            
+        // Reset car if it reaches right edge
+        if (carRight.currentPosition % width === 0 || carRight.currentPosition >= cellCount) {
+            let rowOfStartingPosition = Math.floor(carRight.startPosition / width);
+            carRight.currentPosition = rowOfStartingPosition * width;
+            // carRight.currentPosition = carRight.startPosition;
+        }
+        addCar(carRight);
+    }
+    
+    // Controls car speed
+    carsRight.forEach((carRight, index) => {
+        let interval;
+        if ([0, 1, 2].includes(index)) {
+            interval = 1000;
+        } else {
+            interval = 500
+        }
+        setInterval(() => moveCarRight(carRight), interval);
+    })
+
+    // carsRight.forEach((carRight, index) => {
+    //     let interval = 900;
+    //     setInterval(() => moveCarRight(carRight), interval);
+    // })
+
+
+//? Handle log movement right
+
+function moveLog(brownLog) {
+    removeLog(brownLog);
+    brownLog.currentPosition += brownLog.speed; // Move car to the right
+        
+    // Reset car if it reaches right edge
+    if (brownLog.currentPosition % width === 0 || brownLog.currentPosition >= cellCount) {
+        let rowOfStartingPosition = Math.floor(brownLog.startPosition / width);
+        brownLog.currentPosition = rowOfStartingPosition * width;
+        // carRight.currentPosition = carRight.startPosition;
+    }
+    addLog(brownLog);
+}
+
+// Controls car speed
+logs.forEach((brownLog, index) => {
+    let interval;
+    if ([0].includes(index)) {
+        interval = 1200;
+    } else {
+        interval = 500
+    }
+    setInterval(() => moveLog(brownLog), interval);
+})
 
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
@@ -237,15 +370,27 @@ function init() {
     addCar(cars[4]);
     addCar(cars[5]);
     addCar(cars[7]);
-    addCar(cars[8]);
-    
+
+    addCar(carsRight[0]);
+    addCar(carsRight[1]);
+    addCar(carsRight[2]);
+    addCar(carsRight[3]);
+
+    addLog(logs[0]);
+
     // Make them move once before the interval starts
     moveCar(cars[1]);
     moveCar(cars[2]);
     moveCar(cars[4]);
     moveCar(cars[5]);
     moveCar(cars[7]);
-    moveCar(cars[8]);
+
+    moveCarRight(carsRight[0]);
+    moveCarRight(carsRight[1]);
+    moveCarRight(carsRight[2]);
+    moveCarRight(carsRight[3]);
+
+    moveLog(logs[0]);
 
     topLocations.forEach(position => {  // Add Score locations
         addClassToCell(position, 'topLocations');
