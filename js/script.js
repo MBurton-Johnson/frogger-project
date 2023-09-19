@@ -96,6 +96,9 @@ function init() {
             speed: 1
         },
     ];
+
+    console.log(cars[7].startPosition);
+
     const rightStart = (height - 3) * width;
     const carsRight = [
         {    // Car 0
@@ -168,14 +171,55 @@ function init() {
 
     // TURTLES
 
-    // const turtles = [
-    //     {    // turtle 0
-    //         startPosition: cellCount - (width * 8) - 5,
-    //         currentPosition: cellCount - (width * 8) - 5,
-    //         speed: 1
-    //     },
-    // ]
+    const turtles = [
+        {    // turtle 0
+            startPosition: cellCount - (width * 8) - 5,
+            currentPosition: cellCount - (width * 8) - 5,
+            speed: 1
+        },
+        {    // turtle 1
+            startPosition: cellCount - (width * 8) - 9,
+            currentPosition: cellCount - (width * 8) - 9,
+            speed: 1
+        },
+        {    // turtle 2
+            startPosition: cellCount - (width * 8) - 13,
+            currentPosition: cellCount - (width * 8) - 13,
+            speed: 1
+        },
+        {    // turtle 3
+            startPosition: cellCount - (width * 8) - 17,
+            currentPosition: cellCount - (width * 8) - 17,
+            speed: 1
+        },
+        {    // turtle 4
+            startPosition: cellCount - (width * 8) - 21,
+            currentPosition: cellCount - (width * 8) - 21,
+            speed: 1
+        },
+        {    // turtle 5
+            startPosition: cellCount - (width * 11) -1,
+            currentPosition: cellCount - (width * 11) -1 ,
+            speed: 1
+        },
+        {    // turtle 6
+            startPosition: cellCount - (width * 11) -5,
+            currentPosition: cellCount - (width * 11) -5,
+            speed: 1
+        },
+        {    // turtle 7
+            startPosition: cellCount - (width * 11) -9,
+            currentPosition: cellCount - (width * 11) -9,
+            speed: 1
+        },
+        {    // turtle 8
+            startPosition: cellCount - (width * 11) -13,
+            currentPosition: cellCount - (width * 11) -13,
+            speed: 1
+        },
 
+    ]
+console.log(turtles[5].startPosition);
     // END GAME VARIABLES
 
     let frogPlacement; // 1 or null
@@ -329,22 +373,28 @@ function init() {
                     cells[brownLog.currentPosition + 2].classList.remove('log');
                     cells[brownLog.currentPosition + 3].classList.remove('log');
             }
-        
     }
 
     //? ADD TURTLE CLASS
-    // function addTurtle(turtle) {
-    //     cells[turtle.currentPosition].classList.add('turtle');
-    //     cells[turtle.currentPosition + 1].classList.add('turtle');
-    //     cells[turtle.currentPosition + 2].classList.add('turtle');
-    // }
-
-    // //? REMOVE TURTLE CLASS
-    // function removeTurtle(turtle) {
-    //     cells[turtle.currentPosition].classList.remove('turtle');
-    //     cells[turtle.currentPosition + 1].classList.remove('turtle');
-    //     cells[turtle.currentPosition + 2].classList.remove('turtle');
-    // }
+    function addTurtle(turtle) {
+            if (turtle === turtles[5] || turtle === turtles[6] || turtle === turtles[7] || turtle === turtles[8]) {
+                cells[turtle.currentPosition].classList.add('turtle');
+                cells[turtle.currentPosition + 1].classList.add('turtle');
+            } else { cells[turtle.currentPosition].classList.add('turtle');
+                     cells[turtle.currentPosition + 1].classList.add('turtle');
+                     cells[turtle.currentPosition + 2].classList.add('turtle');
+    }
+    }
+    //? REMOVE TURTLE CLASS
+    function removeTurtle(turtle) {
+        if (turtle === turtles[5] || turtle === turtles[6] || turtle === turtles[7] || turtle === turtles[8]) {
+            cells[turtle.currentPosition].classList.remove('turtle');
+            cells[turtle.currentPosition + 1].classList.remove('turtle');
+             } else { cells[turtle.currentPosition].classList.remove('turtle');
+                      cells[turtle.currentPosition + 1].classList.remove('turtle');
+                      cells[turtle.currentPosition + 2].classList.remove('turtle');
+    }
+}
     // //? ADD CAR [RIGHT MOVEMENT] CLASS
 
     // function addCar(carRight) {
@@ -463,31 +513,31 @@ logs.forEach((brownLog, index) => {
 
     //? Handle turtle movement 
 
-    // function moveTurtle(turtle) {
-    //     removeTurtle(turtle);
-    //     turtle.currentPosition -= turtle.speed; // Move turtle to the left
+    function moveTurtle(turtle) {
+        removeTurtle(turtle);
+        turtle.currentPosition -= turtle.speed; // Move turtle to the left
         
-    //     // Reset turtle if it reaches left edge
-    //         if (turtle.currentPosition % width === width - 2 || turtle.currentPosition < 0) {
-    //             let rowOfStartingPosition = Math.floor(turtle.startPosition / width);
-    //             turtle.currentPosition = (rowOfStartingPosition + 1) * width - 2;
-    //         }
+        // Reset turtle if it reaches left edge
+            if (turtle.currentPosition % width === width - 2 || turtle.currentPosition < 0) {
+                let rowOfStartingPosition = Math.floor(turtle.startPosition / width);
+                turtle.currentPosition = (rowOfStartingPosition + 1) * width - 2;
+            }
     
-    //     addTurtle(turtle);
-    // }
+        addTurtle(turtle);
+    }
 
-    // // Controls turtle speed
-    // turtles.forEach((turtle, index) => {
-    //     let interval;
-    //     if ([0, 1, 2].includes(index)) {
-    //         interval = 1000;
-    //     } else if ([6, 7].includes(index)) {
-    //         interval = 500;
-    //     } else {
-    //         interval = 800
-    //     }
-    //     setInterval(() => moveTurtle(turtle), interval);
-    // })
+    // Controls turtle speed
+    turtles.forEach((turtle, index) => {
+        let interval;
+        if ([0, 1, 2, 3, 4].includes(index)) {
+            interval = 400;
+        } else if ([5, 6, 7, 8].includes(index)) {
+            interval = 500;
+        } else {
+            interval = 800
+        }
+        setInterval(() => moveTurtle(turtle), interval);
+    })
 
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
@@ -515,7 +565,15 @@ logs.forEach((brownLog, index) => {
     addLog(logs[6]);
     addLog(logs[7]);
 
-    // addTurtle(turtles[0]);
+    addTurtle(turtles[0]);
+    addTurtle(turtles[1]);
+    addTurtle(turtles[2]);
+    addTurtle(turtles[3]);
+    addTurtle(turtles[4]);
+    addTurtle(turtles[5]);
+    addTurtle(turtles[6]);
+    addTurtle(turtles[7]);
+    addTurtle(turtles[8]);
 
     // Make them move once before the interval starts
     moveCar(cars[1]); // should this be starting from 1? or 0?
@@ -538,7 +596,15 @@ logs.forEach((brownLog, index) => {
     moveLog(logs[6]);
     moveLog(logs[7]);
 
-    // moveTurtle(turtles[0]);
+    moveTurtle(turtles[0]);
+    moveTurtle(turtles[1]);
+    moveTurtle(turtles[2]);
+    moveTurtle(turtles[3]);
+    moveTurtle(turtles[4]);
+    moveTurtle(turtles[5]);
+    moveTurtle(turtles[6]);
+    moveTurtle(turtles[7]);
+    moveTurtle(turtles[8]);
 
     topLocations.forEach(position => {  // Add Score locations
         addClassToCell(position, 'topLocations');

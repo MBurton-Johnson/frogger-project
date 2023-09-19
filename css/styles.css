@@ -89,3 +89,10 @@
     border-color: transparent;
   }
 
+  .grid div.turtle {
+    background-color: red;
+    color: red;
+    border-color: black;
+  }
+
+
