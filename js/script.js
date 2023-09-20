@@ -18,6 +18,13 @@ function init() {
     // CHARACTER CONFIG
     const startingPosition = 346
     let currentPosition = startingPosition
+    let previousPosition = startingPosition;
+
+    let frogLog = null;
+
+
+    // let frogOnLog
+    // let frogOnLogPosition = currentPosition
 
     // ENVIRONMENT STYLING
     function addClassToCell(position, className) {
@@ -261,12 +268,15 @@ function init() {
     function addFrogger(position) {
         console.log('FROGGER BEING ADDED TO THE FOLLOWING CELL ->', position);
         cells[position].classList.add('frogger')
+        previousPosition = position;  // Store the position where frogger is currently
+
     }
 
     // ? REMOVE FROGGER CLASS
     function removeFrogger() {
         console.log('FROGGER REMOVED')
-        cells[currentPosition].classList.remove('frogger')
+        cells[previousPosition].classList.remove('frogger');
+        
     }
 
     // ? ADD FROGGER SCORED CLASS
@@ -317,6 +327,7 @@ function init() {
         addFrogger(currentPosition)
 
         checkForCollision();
+        
     }
 
     //? ADD CAR CLASS
@@ -338,7 +349,6 @@ function init() {
     }
 
     //? ADD LOG CLASS
-
     function addLog(brownLog) {
         cells[brownLog.currentPosition].classList.add('log');
         cells[brownLog.currentPosition + 1].classList.add('log');
@@ -374,6 +384,7 @@ function init() {
                     cells[brownLog.currentPosition + 3].classList.remove('log');
             }
     }
+
 
     //? ADD TURTLE CLASS
     function addTurtle(turtle) {
@@ -492,7 +503,14 @@ function init() {
 
 function moveLog(brownLog) {
     removeLog(brownLog);
-    brownLog.currentPosition += brownLog.speed; // Move log to the right
+
+    brownLog.currentPosition += brownLog.speed; // Move log to the right\
+
+    if (frogLog === brownLog) {  // If frog is on this log
+        removeFrogger();
+        currentPosition += brownLog.speed;  // Move frog with the log
+        addFrogger(currentPosition);
+    }
         
     // Reset log if it reaches right edge
     if (brownLog.currentPosition % width === width -1 || brownLog.currentPosition >= cellCount) {
@@ -564,25 +582,31 @@ logs.forEach((brownLog, index) => {
                 return;
             }
         }
-    // Let frogger ride the logs
+
+        frogLog = null; // Reset
+    
         for (let log of logs) {
-            if (currentPosition === log.currentPosition) {
-                rideLog(log);
-                return;
+            let logStart = log.currentPosition;
+            let logEnd = logStart + 2;
+    
+            if ([3, 4].includes(logs.indexOf(log))) {
+                logEnd = logStart + 4; 
+            } else if ([5, 6, 7].includes(logs.indexOf(log))) {
+                logEnd = logStart + 3; 
+            }
+            
+            if (currentPosition >= logStart && currentPosition <= logEnd) {
+                frogLog = log;  // Assign the log the frog is on
+                break;
             }
         }
     }
+    
 
     function froggerDead() {
         removeFrogger();
         currentPosition = startingPosition
         addFrogger(currentPosition)
-    }
-
-    function rideLog(log) {
-        removeFrogger(currentPosition)
-        currentPosition +=log.speed;
-        addFrogger(currentPosition);
     }
 
     // ! EVENTS
