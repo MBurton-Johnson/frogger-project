@@ -68,9 +68,11 @@
     visibility: hidden;
    }
  
-  .grid div.frogger {
+  .grid div.frogger{
     background-color: green;
     color: green;
+    z-index: 3;
+    position: relative;
   }
 
   .grid div.icon {
@@ -83,10 +85,12 @@
     border-color: transparent;
   }
 
-  .grid div.log {
+  .grid div.log  {
     background-color: brown;
     color: brown;
     border-color: transparent;
+    z-index: 1;
+    position: relative;
   }
 
   .grid div.turtle {

@@ -97,8 +97,6 @@ function init() {
         },
     ];
 
-    console.log(cars[7].startPosition);
-
     const rightStart = (height - 3) * width;
     const carsRight = [
         {    // Car 0
@@ -219,7 +217,7 @@ function init() {
         },
 
     ]
-console.log(turtles[5].startPosition);
+
     // END GAME VARIABLES
 
     let frogPlacement; // 1 or null
@@ -278,7 +276,7 @@ console.log(turtles[5].startPosition);
         cells[position].classList.add('icon') 
     }
 
-    // ? Handle frogger LEFT movement
+    // ? Handle Frogger movement
     function handleMovement(event) {
         const key = event.keyCode
 
@@ -295,18 +293,18 @@ console.log(turtles[5].startPosition);
         if (key === up && currentPosition >= width) {
             console.log('Up')
             currentPosition-=width
-        } else if (key === down & currentPosition + width <= cellCount-1) {
-        console.log('Down')
-        currentPosition+=width
-        } else if (key === left && currentPosition % width !== 0) {
-        console.log('Left')
-        currentPosition--
-        } else if (key === right && currentPosition % width !== width -1) {
-        console.log('Right')
-        currentPosition++
-        } else {
-            console.log('INVALID KEY');
-        }
+                } else if (key === down & currentPosition + width <= cellCount-1) {
+                console.log('Down')
+                currentPosition+=width
+                } else if (key === left && currentPosition % width !== 0) {
+                console.log('Left')
+                currentPosition--
+                } else if (key === right && currentPosition % width !== width -1) {
+                console.log('Right')
+                currentPosition++
+                } else {
+                    console.log('INVALID KEY');
+                }
         
         //  Check if frogger has scored
 
@@ -317,6 +315,8 @@ console.log(turtles[5].startPosition);
         }
         //  Add frogger class once currentPosition has been updated
         addFrogger(currentPosition)
+
+        checkForCollision();
     }
 
     //? ADD CAR CLASS
@@ -434,6 +434,8 @@ console.log(turtles[5].startPosition);
              }
     
         addCar(car);
+
+        checkForCollision();
     }
 
     // Controls car speed
@@ -465,6 +467,8 @@ console.log(turtles[5].startPosition);
             carRight.currentPosition = rowOfStartingPosition * width;
         }
         addCar(carRight);
+
+        checkForCollision();
     }
     
     // Controls car speed
@@ -496,6 +500,7 @@ function moveLog(brownLog) {
         brownLog.currentPosition = rowOfStartingPosition * width;
     }
     addLog(brownLog);
+    checkForCollision();
 }
 
 // Controls log speed
@@ -504,7 +509,7 @@ logs.forEach((brownLog, index) => {
     if ([0, 1 ,2].includes(index)) {
         interval = 1200;
     } else if ([3, 4].includes(index)) {
-        interval = 200;
+        interval = 300;
     } else {
         interval = 500;
     }
@@ -538,6 +543,47 @@ logs.forEach((brownLog, index) => {
         }
         setInterval(() => moveTurtle(turtle), interval);
     })
+
+
+    //? CHECK FOR COLLISIONS
+
+    // Kill frogger if he's hit by car or truck
+    function checkForCollision() {
+        for (let car of cars) {
+            if (currentPosition === car.currentPosition) {
+                froggerDead();
+                return;
+            }
+            if ((car === cars[6] || car === cars[7]) && currentPosition === car.currentPosition + 1) {
+                froggerDead();
+                return;
+        }}
+        for (let car of carsRight) {
+            if (currentPosition === car.currentPosition) {
+                froggerDead();
+                return;
+            }
+        }
+    // Let frogger ride the logs
+        for (let log of logs) {
+            if (currentPosition === log.currentPosition) {
+                rideLog(log);
+                return;
+            }
+        }
+    }
+
+    function froggerDead() {
+        removeFrogger();
+        currentPosition = startingPosition
+        addFrogger(currentPosition)
+    }
+
+    function rideLog(log) {
+        removeFrogger(currentPosition)
+        currentPosition +=log.speed;
+        addFrogger(currentPosition);
+    }
 
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
