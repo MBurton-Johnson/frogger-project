@@ -18,19 +18,47 @@
     height: 100%;
     width: 100%;
     background-color: black;
-    z-index: 2;  /* This ensures the overlay is above the grid but below other popups like game over. */
+    z-index: 2; 
+    display: flex;  
+    justify-content: center;  
+    flex-direction: column;
+    align-items: center; 
+}
+
+.black-overlay::before {
+    content: "";
+    height: 100px; 
+    display: block;
+}
+
+.black-overlay img {
+    margin-bottom: 100px; 
 }
 
   body {
     height: 100vh;
     margin: 0;
   }
-  
+
  #startButton {
+    transform: scale(1);
     font-size: 2em;           
     padding: 20px 40px;       
     border: 2px solid black; 
+    margin-bottom: 80px;
+    z-index: 3;
+  }
 
+  #startButton:hover  {
+    transform: scale(1.2);
+}
+
+  p {
+    margin-top: auto;
+    margin-bottom: 100px;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    font-size: large;
   }
 
   #game-over-container {

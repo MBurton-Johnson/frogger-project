@@ -826,7 +826,7 @@ logs.forEach((brownLog, index) => {
 }
 
 document.getElementById('startButton').addEventListener('click', function() {
-// document.querySelector(".black-overlay").style.display = "none";
+document.querySelector(".black-overlay").style.display = "none";
 init()
 this.style.display = 'none';
 })
