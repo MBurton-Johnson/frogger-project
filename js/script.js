@@ -10,15 +10,19 @@ function init() {
     // ? VARIABLES
 
     //BOARD CONFIG
-    const width = 21
-    const height = 17
-    const cellCount = width * height
-    let cells = []
+    const width = 21;
+    const height = 17;
+    const cellCount = width * height;
+    let cells = [];
+
+    while (grid.firstChild) {
+        grid.removeChild(grid.lastChild);
+    }
+    cells = [];
 
     // CHARACTER CONFIG
     const startingPosition = 346
     let currentPosition = startingPosition
-    let previousPosition = startingPosition;
 
     let frogLog = null;
     let frogTurtle = null;
@@ -232,6 +236,9 @@ function init() {
 
     // END GAME VARIABLES
     let intervalIDs = [];
+    const gameOverContainer = document.getElementById('game-over-container');
+    const playAgainButton = document.getElementById('playAgain');
+    lifeCounter.style.display = 'block';
 
     let frogPlacement; // 1 or null
     let winStage; // 1 or null
@@ -273,14 +280,12 @@ function init() {
     function addFrogger(position) {
         console.log('FROGGER BEING ADDED TO THE FOLLOWING CELL ->', position);
         cells[position].classList.add('frogger')
-        previousPosition = position;  // Store the position where frogger is currently
-
     }
 
     // ? REMOVE FROGGER CLASS
     function removeFrogger() {
         console.log('FROGGER REMOVED')
-        cells[previousPosition].classList.remove('frogger');
+        cells[currentPosition].classList.remove('frogger');
         
     }
 
@@ -352,6 +357,19 @@ function init() {
             cells[car.currentPosition + 1].classList.remove('car');
         }
     }
+
+    //? ADD RIGHT CAR CLASS
+
+    function addRightCar(car) {
+        cells[car.currentPosition].classList.add('rightCar');
+        }
+    
+    //? REMOVE RIGHT CAR CLASS
+
+    function removeRightCar(car) {
+        cells[car.currentPosition].classList.remove('rightCar');
+        }
+    
 
     //? ADD LOG CLASS
     function addLog(brownLog) {
@@ -471,7 +489,7 @@ function init() {
     //? Handle car movement RIGHT
 
     function moveCarRight(carRight) {
-        removeCar(carRight);
+        removeRightCar(carRight);
         carRight.currentPosition += carRight.speed; // Move car to the right
             
         // Reset car if it reaches right edge
@@ -483,7 +501,7 @@ function init() {
             // Set the currentPosition to the rightmost cell of that row
             carRight.currentPosition = rowOfStartingPosition * width;
         }
-        addCar(carRight);
+        addRightCar(carRight);
 
         checkForCollision();
     }
@@ -671,14 +689,13 @@ logs.forEach((brownLog, index) => {
     // Game over 
         function gameOver() {
             intervalIDs.forEach(id => clearInterval(id));
+            intervalIDs = [];
             while (grid.firstChild) {
                 grid.removeChild(grid.lastChild);
             }
             cells = []; 
             currentPosition = startingPosition; 
             document.removeEventListener('keydown', handleMovement);
-            const gameOverContainer = document.getElementById('game-over-container');
-            const playAgainButton = document.getElementById('playAgain');
 
             if (gameOverContainer) {
                 gameOverContainer.style.display = 'block';
@@ -699,9 +716,12 @@ logs.forEach((brownLog, index) => {
     playAgain.addEventListener('click', function() {
         // Code to restart the game
         // e.g., reset game state, hide the game over alert and play again button, etc.
-        gameOver.style.display = 'none';
-        playAgain.style.display = 'none';
+        gameOverContainer.style.display = 'none';
+        playAgain.classList.remove('show')
         // ... other code to reset and restart the game ...
+        lives = 5;
+        updateLifeCounter()
+        init()
     });
 
     // ! PAGE LOAD / RENDER
@@ -713,10 +733,10 @@ logs.forEach((brownLog, index) => {
     addCar(cars[5]);
     addCar(cars[7]);
 
-    addCar(carsRight[0]);
-    addCar(carsRight[1]);
-    addCar(carsRight[2]);
-    addCar(carsRight[3]);
+    addRightCar(carsRight[0]);
+    addRightCar(carsRight[1]);
+    addRightCar(carsRight[2]);
+    addRightCar(carsRight[3]);
 
     addLog(logs[0]);
     addLog(logs[1]);
@@ -806,6 +826,7 @@ logs.forEach((brownLog, index) => {
 }
 
 document.getElementById('startButton').addEventListener('click', function() {
+// document.querySelector(".black-overlay").style.display = "none";
 init()
 this.style.display = 'none';
 })

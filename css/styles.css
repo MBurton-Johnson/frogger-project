@@ -11,6 +11,16 @@
     }
 }
 
+.black-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    z-index: 2;  /* This ensures the overlay is above the grid but below other popups like game over. */
+}
+
   body {
     height: 100vh;
     margin: 0;
@@ -66,6 +76,7 @@
     font-size: 2em;           
     padding: 40px 60px;       
     border: 2px solid black; 
+    display: none;
 }
   
   .grid-wrapper {
@@ -139,45 +150,77 @@
    }
  
   .grid div.frogger {
-    background-color: green;
-    color: green;
+    background-image: url('../assets/frogger.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
     z-index: 3;
     position: relative;
+    color: transparent
   }
 
   .grid div.icon.topLocations {
-    background-color: green;
-    color: green;
+    background-image: url('../assets/homeFrog.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    color: transparent;
+
   }
 
   .grid div.car {
-    background-color:grey;
-    color: gray;
-    border-color: black;
+    background-image: url('../assets/pinkCar.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
     z-index: 3;
+    color: transparent;
+  }
+
+  .grid div.rightCar {
+    background-image: url('../assets/whiteCar.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    z-index: 3;
+    color: transparent;
   }
 
   .grid div.log  {
-    background-color: brown;
-    color: brown;
-    border-color: transparent;
-    position: relative;
+    background-image: url('../assets/log.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    z-index: 3;
+    color: transparent;
   }
 
   .grid div.turtle {
-    background-color: red;
-    color: red;
-    border-color: black;
+    background-image: url('../assets/turtle.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    color: transparent;
   }
 
   .grid div.frogger.log {
-    background-color: green;
-    color: green;
+    background-image: url('../assets/frogger.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    z-index: 3;
+    position: relative;
+    color: transparent
   }
 
   .grid div.frogger.turtle {
-    background-color: green;
-    color: green;
+    background-image: url('../assets/frogger.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    z-index: 3;
+    position: relative;
+    color: transparent
   }
 
   .water {
