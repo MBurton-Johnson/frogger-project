@@ -21,10 +21,9 @@ function init() {
     let previousPosition = startingPosition;
 
     let frogLog = null;
+    let frogTurtle = null;
 
-
-    // let frogOnLog
-    // let frogOnLogPosition = currentPosition
+    let lives = 5;
 
     // ENVIRONMENT STYLING
     function addClassToCell(position, className) {
@@ -46,13 +45,13 @@ function init() {
     const rightBorderStart = width - 2;  
     const leftBorderStart = 0;           
     
-    const rightBorder = Array.from({length: height}, (_, i) => [ // two right hand borders
+    const rightBorder = Array.from({length: height}, (_, i) => [ // three right hand borders
         (i * width) + rightBorderStart, 
         (i * width) + rightBorderStart + 1,
         18 + (i* width)
     ]).flat();
     
-    const leftBorder = Array.from({length: height}, (_, i) => [  // two left hand borders
+    const leftBorder = Array.from({length: height}, (_, i) => [  // three left hand borders
         (i * width) + leftBorderStart,  
         (i * width) + leftBorderStart + 1,
         2 + (i*width)
@@ -226,12 +225,12 @@ function init() {
     ]
 
     // END GAME VARIABLES
+    let intervalIDs = [];
 
     let frogPlacement; // 1 or null
     let winStage; // 1 or null
     let winGame; // 1 or null
     let loseLife; // 1 or null
-    let gameOver; // 1 or null
 
     // ! FUNCTIONS
     // CREATE GRID CELLS
@@ -459,7 +458,8 @@ function init() {
         } else {
             interval = 800
         }
-        setInterval(() => moveCar(car), interval);
+        const logIntervalIDCar = setInterval(() => moveCar(car), interval);
+        intervalIDs.push(logIntervalIDCar)
     })
 
     //? Handle car movement RIGHT
@@ -490,7 +490,9 @@ function init() {
         } else {
             interval = 500
         }
-        setInterval(() => moveCarRight(carRight), interval);
+        const logIntervalIDCarRight = setInterval(() => moveCarRight(carRight), interval);
+        intervalIDs.push(logIntervalIDCarRight);
+
     })
 
     // carsRight.forEach((carRight, index) => {
@@ -503,8 +505,7 @@ function init() {
 
 function moveLog(brownLog) {
     removeLog(brownLog);
-
-    brownLog.currentPosition += brownLog.speed; // Move log to the right\
+    brownLog.currentPosition += brownLog.speed; // Move log to the right
 
     if (frogLog === brownLog) {  // If frog is on this log
         removeFrogger();
@@ -531,7 +532,8 @@ logs.forEach((brownLog, index) => {
     } else {
         interval = 500;
     }
-    setInterval(() => moveLog(brownLog), interval);
+    const logIntervalIDLog = setInterval(() => moveLog(brownLog), interval);
+    intervalIDs.push(logIntervalIDLog)
 })
 
     //? Handle turtle movement 
@@ -540,6 +542,12 @@ logs.forEach((brownLog, index) => {
         removeTurtle(turtle);
         turtle.currentPosition -= turtle.speed; // Move turtle to the left
         
+        if (frogTurtle === turtle) {  // If frog is on this log
+            removeFrogger();
+            currentPosition -= turtle.speed;  // Move frog with the log
+            addFrogger(currentPosition);
+        }
+            
         // Reset turtle if it reaches left edge
             if (turtle.currentPosition % width === width - 2 || turtle.currentPosition < 0) {
                 let rowOfStartingPosition = Math.floor(turtle.startPosition / width);
@@ -547,6 +555,7 @@ logs.forEach((brownLog, index) => {
             }
     
         addTurtle(turtle);
+        checkForCollision();
     }
 
     // Controls turtle speed
@@ -559,7 +568,8 @@ logs.forEach((brownLog, index) => {
         } else {
             interval = 800
         }
-        setInterval(() => moveTurtle(turtle), interval);
+        const logIntervalIDTurtle = setInterval(() => moveTurtle(turtle), interval);
+        intervalIDs.push(logIntervalIDTurtle);
     })
 
 
@@ -582,7 +592,8 @@ logs.forEach((brownLog, index) => {
                 return;
             }
         }
-
+    
+    // Allow frogger to ride the logs
         frogLog = null; // Reset
     
         for (let log of logs) {
@@ -600,15 +611,73 @@ logs.forEach((brownLog, index) => {
                 break;
             }
         }
-    }
+    // Allow frogger to ride the turtles
+        frogTurtle = null; // Reset
+
+        for (let turtle of turtles) {
+            let turtleStart = turtle.currentPosition;
+            let turtleEnd = turtleStart + 1;
     
+            if ([0, 1, 2, 3, 4].includes(turtles.indexOf(turtle))) {
+                turtleEnd = turtleStart + 2; 
+            } 
+            if (currentPosition >= turtleStart && currentPosition <= turtleEnd) {
+                frogTurtle = turtle;  // Assign the turtle the frog is on
+                break;
+            }
+        }
+    
+    // Kill frogger if he falls in water 
+        if (currentPosition >= 87 && currentPosition <=185) {
+            if (!cells[currentPosition].classList.contains('log') &&
+            !cells[currentPosition].classList.contains('turtle')) {
+                froggerDead();
+                return;
+            }
+        }
 
-    function froggerDead() {
-        removeFrogger();
-        currentPosition = startingPosition
-        addFrogger(currentPosition)
+    // Kill frogger if he goes off screen 
+        if (leftBorder.includes(currentPosition) || rightBorder.includes(currentPosition)) {
+            froggerDead();
+            return;
+        }
     }
 
+    // When frogger dies, reset him
+    function froggerDead() {
+        lives--
+        updateLifeCounter()
+
+        if (lives<=0) {
+            gameOver();
+        } else {
+            removeFrogger();
+            currentPosition = startingPosition
+            addFrogger(currentPosition)
+        }
+    }
+
+    // When frogger dies, lose a life
+    function updateLifeCounter() {
+        document.getElementById('lifeCounter').innerText = "Lives: " + lives;
+    }
+
+    // Game over 
+        function gameOver() {
+            intervalIDs.forEach(id => clearInterval(id));
+            while (grid.firstChild) {
+                grid.removeChild(grid.lastChild);
+            }
+            cells = []; 
+            currentPosition = startingPosition; 
+            document.removeEventListener('keydown', handleMovement);
+            const gameOverAlert = document.getElementById('gameOver');
+            if (gameOverAlert) {  // Check if the element is not null
+                gameOverAlert.style.display = 'block';
+            } else {
+                console.error('Element with ID "game-over-alert" not found!');
+            }
+        }
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
 
@@ -705,4 +774,7 @@ logs.forEach((brownLog, index) => {
     })
 }
 
-window.addEventListener('DOMContentLoaded', init)
+document.getElementById('startButton').addEventListener('click', function() {
+init()
+this.style.display = 'none';
+})

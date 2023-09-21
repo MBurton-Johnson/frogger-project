@@ -7,6 +7,13 @@
     margin: 0;
   }
   
+  .btn {
+
+  }
+
+  #gameOver {
+    display: none;
+  }
   
   .grid-wrapper {
     height: 100vh;
@@ -100,5 +107,9 @@
   }
 
   .grid div.frogger.log {
+    background-color: green;
+  }
+
+  .grid div.frogger.turtle {
     background-color: green;
   }
