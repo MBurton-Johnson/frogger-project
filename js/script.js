@@ -37,7 +37,13 @@ function init() {
 
     const topRow = Array.from({length: (2*width)}, (_, i) => (2*width) - (2*width) + i);
 
-    const secondTopRow = Array.from({length: width}, (_, i) => (3*width) - width + i);
+    const secondTopRow = Array.from({length: (2*width)}, (_, i) => (4*width) - (2*width) + i);
+
+    const hedge = [66, 68, 69, 71, 72, 74, 75, 77, 78, 80]
+
+    const water = Array.from({length: 5*width}, (_, i) => (9*width) - (5*width) + i);
+
+    const road = Array.from({length: (6*width)}, (_,i) => (16*width) - (6*width) + i);
 
     const middleRowStart = (Math.floor(height / 2) * width) + width
     const middleRow = Array.from({length: width }, (_, i) => middleRowStart+i) // middle row
@@ -637,7 +643,7 @@ logs.forEach((brownLog, index) => {
         }
 
     // Kill frogger if he goes off screen 
-        if (leftBorder.includes(currentPosition) || rightBorder.includes(currentPosition)) {
+        if (leftBorder.includes(currentPosition) || rightBorder.includes(currentPosition) || hedge.includes(currentPosition)) {
             froggerDead();
             return;
         }
@@ -671,15 +677,32 @@ logs.forEach((brownLog, index) => {
             cells = []; 
             currentPosition = startingPosition; 
             document.removeEventListener('keydown', handleMovement);
-            const gameOverAlert = document.getElementById('gameOver');
-            if (gameOverAlert) {  // Check if the element is not null
-                gameOverAlert.style.display = 'block';
+            const gameOverContainer = document.getElementById('game-over-container');
+            const playAgainButton = document.getElementById('playAgain');
+
+            if (gameOverContainer) {
+                gameOverContainer.style.display = 'block';
+
+                setTimeout(() => {
+                    if (playAgainButton) {
+                        playAgainButton.classList.add('show');
+                    }
+                }, 1000); // 1 second delay, adjust as needed
+
             } else {
-                console.error('Element with ID "game-over-alert" not found!');
+                console.error('Element with ID "game-over-container" not found!');
             }
         }
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
+
+    playAgain.addEventListener('click', function() {
+        // Code to restart the game
+        // e.g., reset game state, hide the game over alert and play again button, etc.
+        gameOver.style.display = 'none';
+        playAgain.style.display = 'none';
+        // ... other code to reset and restart the game ...
+    });
 
     // ! PAGE LOAD / RENDER
     createGrid() // Create grid
@@ -763,6 +786,14 @@ logs.forEach((brownLog, index) => {
 
     secondTopRow.forEach(position => {
         addClassToCell(position, 'secondTopRow') // add second top row
+    })
+
+    water.forEach(position => {
+        addClassToCell(position, 'water') // add water
+    })
+
+    road.forEach(position => {
+        addClassToCell(position, 'road') // add road
     })
 
     rightBorder.forEach(position => {

@@ -2,24 +2,78 @@
     box-sizing: border-box;
   }
   
+  @keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
   body {
     height: 100vh;
     margin: 0;
   }
   
-  .btn {
+ #startButton {
+    font-size: 2em;           
+    padding: 20px 40px;       
+    border: 2px solid black; 
 
   }
+
+  #game-over-container {
+    text-align: center; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    z-index: 10; 
+    width: 100%; 
+}
 
   #gameOver {
-    display: none;
-  }
+    z-index: 10; 
+    font-size: 2em;           
+    padding: 40px 60px;       
+    border: 2px solid black; 
+    width: max-content;
+    margin: 0 auto; /* centers the element */
+}
+  
+#playAgain {
+    opacity: 0;
+    transition: transform 0.3s ease;
+    transform: translateY(0);
+    margin-top: 60px;
+    font-size: 2em;           
+    padding: 10px 20px;       
+    border: 2px solid black; 
+}
+#playAgain:hover {
+    transform: translateY(-10px);
+}
+
+#playAgain.show {
+    animation: fadeIn 8s forwards;
+}
+
+#lifeCounter {
+    position: absolute;  
+    top: 100px;          
+    left: 100px; 
+    font-size: 2em;           
+    padding: 40px 60px;       
+    border: 2px solid black; 
+}
   
   .grid-wrapper {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
   }
   
   .grid {
@@ -31,18 +85,27 @@
     justify-content: center;
     height: 600px;
     width: 600px;
+    position: relative;
   }
   
   .grid div {
-    border: 1px solid rgb(243, 243, 243);
+    position:relative;
+    border: 1px solid transparent;
     flex-grow: 1;
-    color: rgb(243, 243, 243);
+    color: none;
+    font-size: xx-small;
+    z-index: 1;
     /* height: 10%;
     width: 10%; */
   }
   
   .grid div.topLocations {
     background-color: lightgray
+  }
+
+  .grid div.topLocations.secondTopRow {
+    background-color: lightgray;
+    color: lightgray;
   }
 
   .grid div.startLine {
@@ -57,7 +120,7 @@
 
   .grid div.secondTopRow {
     background-color: greenyellow;
-    border-color: greenyellow;
+    border-color: none;
     color: greenyellow;
   }
 
@@ -78,25 +141,26 @@
   .grid div.frogger {
     background-color: green;
     color: green;
-    z-index: 2;
+    z-index: 3;
     position: relative;
   }
 
-  .grid div.icon {
+  .grid div.icon.topLocations {
     background-color: green;
+    color: green;
   }
 
   .grid div.car {
     background-color:grey;
     color: gray;
-    border-color: transparent;
+    border-color: black;
+    z-index: 3;
   }
 
   .grid div.log  {
     background-color: brown;
     color: brown;
     border-color: transparent;
-    z-index: 1;
     position: relative;
   }
 
@@ -108,8 +172,20 @@
 
   .grid div.frogger.log {
     background-color: green;
+    color: green;
   }
 
   .grid div.frogger.turtle {
     background-color: green;
+    color: green;
+  }
+
+  .water {
+    background-color: blue;
+    color: blue;
+  }
+
+  .road {
+    background-color: black;
+    color: black;
   }
