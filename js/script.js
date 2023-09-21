@@ -661,7 +661,7 @@ logs.forEach((brownLog, index) => {
     function updateLifeCounter() {
         document.getElementById('lifeCounter').innerText = "Lives: " + lives;
     }
-
+ 
     // Game over 
         function gameOver() {
             intervalIDs.forEach(id => clearInterval(id));
