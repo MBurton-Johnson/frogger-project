@@ -687,7 +687,7 @@ logs.forEach((brownLog, index) => {
                     if (playAgainButton) {
                         playAgainButton.classList.add('show');
                     }
-                }, 1000); // 1 second delay, adjust as needed
+                }, 1000); // 1 second delay, adjust as needed 
 
             } else {
                 console.error('Element with ID "game-over-container" not found!');
