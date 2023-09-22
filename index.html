@@ -21,10 +21,12 @@
             </div>
         </section>
         <div id="game-over-container" style="display: none;">
+            <div class="spacer"></div>
         <div id="gameOver" class="alert alert-dark" role="alert">GAME OVER!</div>
         <button id="playAgain" type="button" class="btn btn-warning">PLAY AGAIN?</button>
         </div>
-        <div id="lifeCounter" class="alert alert-warning" role="alert">LIVES: 5
+        <div id="lifeCounter" class="alert alert-warning" role="alert">
+            <span id="lives">LIVES: 5</span> 
             <div id="scoreDisplay">Score: 0</div>
         </div>
       </main>
@@ -39,7 +41,7 @@
     <audio id="jumpSound" src="./assets/move-sound.mp3" preload="auto"></audio>
     <audio id="scoreSound" src="./assets/score-sound.mp3" preload="auto"></audio>
     <audio id="deathSound" src="./assets/frogger-death.wav" preload="auto"></audio>
-    <audio id="gameOver" src="./assets/game-over.mp3" preload="auto"></audio>
+    <audio id="gameOverSound" src="./assets/game-over.mp3" preload="auto"></audio>
 
 </body>
 </html>

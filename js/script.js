@@ -20,6 +20,8 @@ function init() {
     }
     cells = [];
 
+    const gridElement = document.querySelector('.grid');
+
     // CHARACTER CONFIG
     const startingPosition = 346
     let currentPosition = startingPosition
@@ -664,6 +666,7 @@ logs.forEach((brownLog, index) => {
 
         if (lives<=0) {
             gameOver();
+            playGameOverSound()
         } else {
             removeFrogger();
             playDeathSound()
@@ -680,7 +683,7 @@ logs.forEach((brownLog, index) => {
 
     // When frogger dies, lose a life
     function updateLifeCounter() {
-        document.getElementById('lifeCounter').innerText = "Lives: " + lives;
+        document.getElementById('lives').innerText = "Lives: " + lives;
     }
  
     // Game over 
@@ -694,6 +697,9 @@ logs.forEach((brownLog, index) => {
                 grid.removeChild(grid.lastChild);
             }
             cells = []; 
+
+            gridElement.style.display = 'none';
+
             currentPosition = startingPosition; 
             document.removeEventListener('keydown', handleMovement);
 
@@ -733,15 +739,16 @@ logs.forEach((brownLog, index) => {
         }
 
         function playDeathSound() {
+            console.log("playGameOverSound called");
             const audio = document.getElementById('deathSound');
             audio.currentTime = 0;
             audio.play();
         }
 
         function playGameOverSound() {
-            const audio = document.getElementById('gameOver');
-            audio.currentTime = 0;
-            audio.play();
+            const gameOverMusic = document.getElementById('gameOverSound');
+            gameOverMusic.currentTime = 0;
+            gameOverMusic.play();
         }
 
 
@@ -753,8 +760,12 @@ logs.forEach((brownLog, index) => {
         playAgain.classList.remove('show')
         lives = 5;
         updateLifeCounter()
+        const audio = document.getElementById('mainMenuMusic');
+        audio.play()
+        if (gridElement.style.display === 'none') {
+            gridElement.style.display = ''; 
         init()
-    });
+    }});
 
     // ! PAGE LOAD / RENDER
     createGrid() // Create grid
