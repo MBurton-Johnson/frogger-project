@@ -666,8 +666,15 @@ logs.forEach((brownLog, index) => {
             gameOver();
         } else {
             removeFrogger();
+            playDeathSound()
             currentPosition = startingPosition
             addFrogger(currentPosition)
+
+            cells[currentPosition].classList.add('flash');
+
+            setTimeout(() => {
+                cells[currentPosition].classList.remove('flash');
+            }, 2000);
         }
     }
 
@@ -724,6 +731,19 @@ logs.forEach((brownLog, index) => {
             audio.currentTime = 0;
             audio.play();
         }
+
+        function playDeathSound() {
+            const audio = document.getElementById('deathSound');
+            audio.currentTime = 0;
+            audio.play();
+        }
+
+        function playGameOverSound() {
+            const audio = document.getElementById('gameOver');
+            audio.currentTime = 0;
+            audio.play();
+        }
+
 
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
