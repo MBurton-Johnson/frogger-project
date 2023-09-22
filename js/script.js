@@ -825,8 +825,28 @@ logs.forEach((brownLog, index) => {
     })
 }
 
+// let music = document.getElementById('startMenuMusic');
+// music.play
+// document.getElementById('myAudio').addEventListener('play', function() {
+//     this.muted = false;
+// });
+
 document.getElementById('startButton').addEventListener('click', function() {
+    let music = document.getElementById('mainMenuMusic');
+music.play();
 document.querySelector(".black-overlay").style.display = "none";
 init()
 this.style.display = 'none';
+})
+
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+        const audio = document.getElementById('mainMenuMusic');
+        
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+    }
 })
