@@ -13,7 +13,7 @@
 </head>
 <body>
     <audio id="mainMenuMusic" preload="auto" loop>
-        <source src="./assets/frogger-main-music.mp3" type="audio/mpeg">
+        <source src="./assets/main-music.mp3" type="audio/mpeg">
     </audio>
     <audio id="startMenuMusic" preload="auto" loop>
         <source src="./assets/start-menu-music.mp3" type="audio/mpeg">
@@ -31,9 +31,14 @@
         <div id="gameOver" class="alert alert-dark" role="alert">GAME OVER!</div>
         <button id="playAgain" type="button" class="btn btn-warning">PLAY AGAIN?</button>
         </div>
-        <div id="lifeCounter" class="alert alert-warning" role="alert">LIVES : 5</div>
+        <div id="lifeCounter" class="alert alert-warning" role="alert">LIVES: 5
+            <div id="scoreDisplay">Score: 0</div>
+        </div>
       </main>
     <script src="./js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <audio id="jumpSound" src="./assets/move-sound.mp3" preload="auto"></audio>
+    <audio id="scoreSound" src="./assets/score-sound.mp3" preload="auto"></audio>
+
 </body>
 </html>

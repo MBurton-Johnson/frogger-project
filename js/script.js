@@ -28,6 +28,7 @@ function init() {
     let frogTurtle = null;
 
     let lives = 5;
+    let score = 0;
 
     // ENVIRONMENT STYLING
     function addClassToCell(position, className) {
@@ -240,10 +241,8 @@ function init() {
     const playAgainButton = document.getElementById('playAgain');
     lifeCounter.style.display = 'block';
 
-    let frogPlacement; // 1 or null
     let winStage; // 1 or null
     let winGame; // 1 or null
-    let loseLife; // 1 or null
 
     // ! FUNCTIONS
     // CREATE GRID CELLS
@@ -313,15 +312,19 @@ function init() {
         if (key === up && currentPosition >= width) {
             console.log('Up')
             currentPosition-=width
+            playJumpSound(); 
                 } else if (key === down & currentPosition + width <= cellCount-1) {
                 console.log('Down')
                 currentPosition+=width
+                playJumpSound(); 
                 } else if (key === left && currentPosition % width !== 0) {
                 console.log('Left')
                 currentPosition--
+                playJumpSound(); 
                 } else if (key === right && currentPosition % width !== width -1) {
                 console.log('Right')
                 currentPosition++
+                playJumpSound(); 
                 } else {
                     console.log('INVALID KEY');
                 }
@@ -329,8 +332,11 @@ function init() {
         //  Check if frogger has scored
 
         if (topLocations.includes(currentPosition)) {
-            addIcon(currentPosition)
-            currentPosition = startingPosition
+            addIcon(currentPosition);
+            currentPosition = startingPosition;
+            score +=100;
+            updateScoreDisplay();
+            playScoreSound();
         
         }
         //  Add frogger class once currentPosition has been updated
@@ -429,21 +435,6 @@ function init() {
                       cells[turtle.currentPosition + 2].classList.remove('turtle');
     }
 }
-    // //? ADD CAR [RIGHT MOVEMENT] CLASS
-
-    // function addCar(carRight) {
-    //     cells[carRight.currentPosition].classList.add('car');
-    //     if(carRight === cars[7] || carRight === cars[6]) {
-    //         cells[carRight.currentPosition - 1].classList.add('car'); // Note the -1 for right-moving cars
-    //     }
-    // }
-        
-    // function removeCar(carRight) {
-    //     cells[carRight.currentPosition].classList.remove('car');
-    //     if(carRight === cars[7] || carRight === cars[6]) {
-    //         cells[carRight.currentPosition - 1].classList.remove('car'); // Note the -1 for right-moving cars
-    //     }
-    // }
 
     //? Handle car movement LEFT
 
@@ -523,7 +514,6 @@ function init() {
     //     let interval = 900;
     //     setInterval(() => moveCarRight(carRight), interval);
     // })
-
 
 //? Handle log movement 
 
@@ -688,6 +678,9 @@ logs.forEach((brownLog, index) => {
  
     // Game over 
         function gameOver() {
+            const audio = document.getElementById('mainMenuMusic');
+            audio.pause()
+
             intervalIDs.forEach(id => clearInterval(id));
             intervalIDs = [];
             while (grid.firstChild) {
@@ -704,21 +697,40 @@ logs.forEach((brownLog, index) => {
                     if (playAgainButton) {
                         playAgainButton.classList.add('show');
                     }
-                }, 1000); // 1 second delay, adjust as needed 
+                }, 1000); 
 
             } else {
                 console.error('Element with ID "game-over-container" not found!');
             }
         }
+
+        //? SCORING
+
+        function updateScoreDisplay() {
+            const scoreElement = document.getElementById('scoreDisplay');
+            scoreElement.innerText = "Score: " + score;
+        }
+
+        //? SOUNDS
+
+        function playJumpSound() {
+            const audio = document.getElementById('jumpSound');
+            audio.currentTime = 0;
+            audio.play();
+        }
+
+        function playScoreSound() {
+            const audio = document.getElementById('scoreSound');
+            audio.currentTime = 0;
+            audio.play();
+        }
+
     // ! EVENTS
     document.addEventListener('keydown', handleMovement)
 
     playAgain.addEventListener('click', function() {
-        // Code to restart the game
-        // e.g., reset game state, hide the game over alert and play again button, etc.
         gameOverContainer.style.display = 'none';
         playAgain.classList.remove('show')
-        // ... other code to reset and restart the game ...
         lives = 5;
         updateLifeCounter()
         init()
