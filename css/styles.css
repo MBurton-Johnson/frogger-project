@@ -134,7 +134,7 @@
 }
 
 #playAgain.show {
-    animation: fadeIn 8s forwards;
+    animation: fadeIn 8s forwards, flashing 1.5s 2s infinite;
 }
 
 #lifeCounter {
