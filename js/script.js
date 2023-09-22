@@ -512,11 +512,6 @@ function init() {
 
     })
 
-    // carsRight.forEach((carRight, index) => {
-    //     let interval = 900;
-    //     setInterval(() => moveCarRight(carRight), interval);
-    // })
-
 //? Handle log movement 
 
 function moveLog(brownLog) {
@@ -874,6 +869,8 @@ logs.forEach((brownLog, index) => {
 //     this.muted = false;
 // });
 
+//? Start The Game!
+
 document.getElementById('startButton').addEventListener('click', function() {
     let music = document.getElementById('mainMenuMusic');
 music.play();
@@ -882,6 +879,7 @@ init()
 this.style.display = 'none';
 })
 
+//? Pause music in-game
 document.addEventListener('keydown', function(event) {
     if (event.code === 'Space') {
         const audio = document.getElementById('mainMenuMusic');
